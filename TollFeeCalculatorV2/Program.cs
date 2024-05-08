@@ -13,6 +13,7 @@ public class Program
 	static void Main(string[] args)
 	{
 		vehicles.Add(new Vehicle("Volvo 245", VehicleTypes.Car));
+		vehicles.Add(new Vehicle("Truck", VehicleTypes.Military));
 
 		tollRateProvider = new TollRateProvider();
 		dateManager = new DateManager();
@@ -20,7 +21,7 @@ public class Program
 		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager);
 		textOutput = new ConsoleTextOutput();
 
-		vehicleManager.SetNewTollPassages(50);
+		vehicleManager.SetNewTollPassages(5000);
 		textOutput.DisplayTollFeesForAllVehicles(vehicles);
 	}
 }

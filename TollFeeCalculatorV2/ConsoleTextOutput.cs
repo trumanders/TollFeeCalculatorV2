@@ -10,7 +10,7 @@ namespace TollFeeCalculatorV2;
 
 	public void DisplayTollFeesForVehicle(IVehicle vehicle)
 	{
-		Console.WriteLine($"{vehicle.Name} ({GetVehicleTypes(vehicle)})\n");
+		Console.WriteLine($"\n{vehicle.Name} ({GetVehicleTypes(vehicle)})\n");
 		Console.WriteLine($"{"PASSAGE TIME",-21}{"FEE", -5}{"PAY"}");
 		foreach (var passageTime in vehicle.TollPassages)
 		{
