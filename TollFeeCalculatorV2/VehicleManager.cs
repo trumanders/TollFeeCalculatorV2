@@ -1,36 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using TollFeeCalculatorV2.Interfaces;
 
 namespace TollFeeCalculatorV2
 {
-	public class VehicleManager
+    public class VehicleManager : IVehicleManager
 	{
-		List<Vehicle> _vehicles;
-		FeeCalculator _feeCalculator;
-		DateManager _dateManager;
+		List<IVehicle> _vehicles;
+		IFeeCalculator _feeCalculator;
+		IDateManager _dateManager;
 
-		public VehicleManager(List<Vehicle> vehicles, FeeCalculator feeCalculator, DateManager dateManager)
+		public VehicleManager(List<IVehicle> vehicles, IFeeCalculator feeCalculator, IDateManager dateManager)
 		{
 			_vehicles = vehicles;
 			_feeCalculator = feeCalculator;
 			_dateManager = dateManager;
 		}
 
-		public void AddVehicles(List<Vehicle> vehicles)
+		public void AddVehicles(List<IVehicle> vehicles)
 		{
 			_vehicles.AddRange(vehicles);
 		}
 
-		public void SetNewTollPassages(int numberOfPassages, int month, int day)
+		public void SetNewTollPassages(int numberOfPassages)
 		{
 			foreach (var (vehicle, i) in _vehicles.Select((value, i) => (value, i)))
 			{
 				vehicle.TollPassages.Clear();
-				var newDates = _dateManager.GetRandomDates(numberOfPassages, month, day);
+				var newDates = _dateManager.GetRandomDates(numberOfPassages);
 				foreach (var date in newDates)
 				{
 					var fee = IsTollFreeVehicle(vehicle) ? 0 : _feeCalculator.GetFeeByDate(date);
@@ -40,7 +36,7 @@ namespace TollFeeCalculatorV2
 				_feeCalculator.SetFeeDue(vehicle.TollPassages);
 			}
 		}
-		public bool IsTollFreeVehicle(Vehicle vehicle)
+		public bool IsTollFreeVehicle(IVehicle vehicle)
 		{
 			if (vehicle == null) return false;
 

@@ -1,18 +1,23 @@
-﻿namespace TollFeeCalculatorV2;
+﻿using TollFeeCalculatorV2.Interfaces;
+namespace TollFeeCalculatorV2;
 
-public class FeeCalculator
+public class FeeCalculator : IFeeCalculator
 {
-	TollRateProvider _tollRateProvider = new TollRateProvider();
+	TollRateProvider _tollRateProvider;
 
 	const int MAX_FEE = 60;
 	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
+
+	public FeeCalculator(TollRateProvider tollRateProvider)
+	{
+		_tollRateProvider = tollRateProvider;
+	}
 
 	public void SetFeeDue(List<TollPassage> tollPassages)
 	{
 		if (tollPassages == null || tollPassages.Count == 0)
 			return;
 
-		// Find index of first passage to be payed
 		var firstFeeIndex = tollPassages.FindIndex(passage => passage.Fee > 0) < 0
 			? 0 : tollPassages.FindIndex(passage => passage.Fee > 0);
 
@@ -33,7 +38,6 @@ public class FeeCalculator
 				intervalStart = tollPassage.PassageTime;
 			}
 		}
-
 		tollPassages[highestFeeInIntervalIndex].IsFeeToPay = tollPassages[highestFeeInIntervalIndex].Fee > 0;
 	}
 

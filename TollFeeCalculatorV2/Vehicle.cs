@@ -1,6 +1,8 @@
-﻿namespace TollFeeCalculatorV2;
+﻿using TollFeeCalculatorV2.Interfaces;
 
-public class Vehicle
+namespace TollFeeCalculatorV2;
+
+public class Vehicle : IVehicle
 {
 	public string Name { get; set; }
 	public VehicleTypes Types { get; set; }

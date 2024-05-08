@@ -1,23 +1,26 @@
-﻿namespace TollFeeCalculatorV2;
+﻿using TollFeeCalculatorV2.Interfaces;
+namespace TollFeeCalculatorV2;
 public class Program
 {
-	static FeeCalculator feeCalculator;
-	static VehicleManager vehicleManager;
-	static DateManager dateManager;
+	static IFeeCalculator feeCalculator;
+	static IVehicleManager vehicleManager;
+	static IDateManager dateManager;
+	static ITextOutput textOutput;
+	static TollRateProvider tollRateProvider;
 
-	static List<Vehicle> vehicles;
+	static List<IVehicle> vehicles = new List<IVehicle>();
 
 	static void Main(string[] args)
 	{
-		vehicles = new List<Vehicle>
-		{
-			new Vehicle("Volvo", VehicleTypes.Car)
-		};
+		vehicles.Add(new Vehicle("Volvo 245", VehicleTypes.Car));
 
+		tollRateProvider = new TollRateProvider();
 		dateManager = new DateManager();
-		feeCalculator = new FeeCalculator();
+		feeCalculator = new FeeCalculator(tollRateProvider);
 		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager);
-		
-		vehicleManager.SetNewTollPassages(10, 5, 8);
+		textOutput = new ConsoleTextOutput();
+
+		vehicleManager.SetNewTollPassages(50);
+		textOutput.DisplayTollFeesForAllVehicles(vehicles);
 	}
 }

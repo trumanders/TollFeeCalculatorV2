@@ -1,39 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TollFeeCalculatorV2.Interfaces;
+namespace TollFeeCalculatorV2;
 
-namespace TollFeeCalculatorV2
+    public class DateManager : IDateManager
 {
-	public class DateManager
+	int _year = DateTime.Now.Year;
+	public List<DateTime> GetRandomDates(int numberOfDates)
 	{
-		const int YEAR = 2024;
-		public List<DateTime> GetRandomDates(int numberOfDates, int month, int day)
+		if (_year != 2024)
 		{
-			//_textIO.TextOutput("Enter number of dates to generate (max 1000) > ");
-			//numberOfDates = _textIO.IntInput(1, 1000);
-
-			//_textIO.TextOutput("Enter month (press enter or invalid for random) > ");
-			//month = _textIO.IntInput(1, 12);
-
-			//_textIO.TextOutput("Enter day (press enter or invalid for random) > ");
-			//int maxDay = month == 2 ? 29 : (month == 4 || month == 6 || month == 9 || month == 11 ? 30 : 31);
-			//day = _textIO.IntInput(1, maxDay);
-
-			Random random = new Random();
-			numberOfDates = numberOfDates < 1 ? 1 : numberOfDates;
-
-			return Enumerable.Range(0, numberOfDates).Select(i =>
-				new DateTime(
-					YEAR,
-					month > 0 ? month : random.Next(1, 13),
-					day > 0 ? day : random.Next(1, 29),
-					random.Next(0, 24),
-					random.Next(0, 60),
-					random.Next(0, 60)
-				)).OrderBy(date => date).ToList();
-
+			throw new Exception("This program is designed to work with year 2024 only");
 		}
+		Random random = new Random();
+
+		return Enumerable.Range(0, numberOfDates).Select(i =>
+		{
+			int month = random.Next(1, 13);
+			int day = random.Next(1, DateTime.DaysInMonth(_year, month));
+			int hour = random.Next(0, 24);
+			int minute = random.Next(60);
+			int second = random.Next(60);
+
+			return new DateTime(_year, month, day, hour, minute, second);
+		}).OrderBy(date => date).ToList();
 	}
 }
