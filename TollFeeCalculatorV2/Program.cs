@@ -1,10 +1,10 @@
-﻿namespace TollFeeCalculatorV2
+﻿namespace TollFeeCalculatorV2;
+internal class Program
 {
-	internal class Program
+	static void Main(string[] args)
 	{
-		static void Main(string[] args)
-		{
-			Console.WriteLine("Hello, World!");
-		}
+		var vehicle = new Vehicle();
+		vehicle.Types = VehicleTypes.Car;
+		Console.WriteLine(new TollCalculator().GetTollFee(vehicle, new DateTime[] { new DateTime(2024, 5, 8, 9, 45, 0) }));
 	}
 }
