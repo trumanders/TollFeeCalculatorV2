@@ -1,6 +1,6 @@
 ﻿namespace TollFeeCalculatorV2;
 
-public class Motorbike : Vehicle
+public class Motorbike
 {
     public string GetVehicleType()
     {
