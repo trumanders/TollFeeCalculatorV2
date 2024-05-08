@@ -2,14 +2,7 @@
 
 public class FeeCalculator
 {
-
-	/**
-	 * Calculate the total toll fee for one day
-	 *
-	 * @param vehicle - the vehicle
-	 * @param dates   - date and time of all passes on one day
-	 * @return - the total toll fee for that day
-	 */
+	TollRateProvider _tollRateProvider = new TollRateProvider();
 
 	public int GetTollFee(Vehicle vehicle, DateTime[] dates)
 	{
@@ -36,6 +29,11 @@ public class FeeCalculator
 		}
 		if (totalFee > 60) totalFee = 60;
 		return totalFee;
+	}
+
+	public int GetFeeByDate(DateTime date)
+	{
+		return _tollRateProvider.GetTollRate(date);
 	}
 
 	public bool IsTollFreeVehicle(Vehicle vehicle)

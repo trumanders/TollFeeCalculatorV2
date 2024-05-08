@@ -5,6 +5,8 @@ internal class Program
 	{
 		var vehicle = new Vehicle("Volvo", VehicleTypes.Car);
 		vehicle.Types = VehicleTypes.Car;
-		Console.WriteLine(new FeeCalculator().GetTollFee(vehicle, new DateTime[] { new DateTime(2024, 5, 8, 9, 45, 0) }));
+
+		var feeByDate = new FeeCalculator().GetFeeByDate(new DateTime(2024, 5, 8, 9, 45, 0));
+		Console.WriteLine(feeByDate);
 	}
 }
