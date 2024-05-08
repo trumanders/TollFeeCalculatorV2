@@ -1,6 +1,6 @@
 ﻿namespace TollFeeCalculatorV2;
 
-public class TollCalculator
+public class FeeCalculator
 {
 
 	/**
