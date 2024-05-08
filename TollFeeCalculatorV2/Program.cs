@@ -1,12 +1,23 @@
 ﻿namespace TollFeeCalculatorV2;
-internal class Program
+public class Program
 {
+	static FeeCalculator feeCalculator;
+	static VehicleManager vehicleManager;
+	static DateManager dateManager;
+
+	static List<Vehicle> vehicles;
+
 	static void Main(string[] args)
 	{
-		var vehicle = new Vehicle("Volvo", VehicleTypes.Car);
-		vehicle.Types = VehicleTypes.Car;
+		vehicles = new List<Vehicle>
+		{
+			new Vehicle("Volvo", VehicleTypes.Car)
+		};
 
-		var feeByDate = new FeeCalculator().GetFeeByDate(new DateTime(2024, 5, 8, 9, 45, 0));
-		Console.WriteLine(feeByDate);
+		dateManager = new DateManager();
+		feeCalculator = new FeeCalculator();
+		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager);
+		
+		vehicleManager.SetNewTollPassages(10, 5, 8);
 	}
 }
