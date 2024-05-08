@@ -46,6 +46,16 @@ public class FeeCalculator : IFeeCalculator
 		return _tollRateProvider.GetTollRate(date);
 	}
 
+	public int CalculateTotalFee(List<TollPassage> tollPassages)
+	{
+		var totalFee = tollPassages
+			.Where(passage => passage.IsFeeToPay)
+			.GroupBy(passage => passage.PassageTime.Date)
+			.Sum(group => group.Sum(passage => passage.Fee));
+
+		return totalFee > 60 ? 60 : totalFee;
+	}
+
 	private bool IsPassageWithinInterval(DateTime start, DateTime end, TimeSpan timeSpan)
 	{
 		return end - start < timeSpan;
