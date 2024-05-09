@@ -4,5 +4,7 @@
     {
         int GetFeeByDate(DateTime date);
         void SetFeeDue(List<TollPassage> tollPassages);
-    }
+        int GetTotalFeeForPassages(List<TollPassage> tollPassages);
+
+	}
 }

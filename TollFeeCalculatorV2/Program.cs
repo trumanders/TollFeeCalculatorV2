@@ -5,8 +5,8 @@ public class Program
 	static IFeeCalculator feeCalculator;
 	static IVehicleManager vehicleManager;
 	static IDateManager dateManager;
-	static ITextOutput textOutput;
 	static TollRateProvider tollRateProvider;
+	static IVehicleDataOutput vehicleDataOutput;
 
 	static List<IVehicle> vehicles = new List<IVehicle>();
 
@@ -17,11 +17,11 @@ public class Program
 
 		tollRateProvider = new TollRateProvider();
 		dateManager = new DateManager();
+		vehicleDataOutput = new VehicleDataOutput();
 		feeCalculator = new FeeCalculator(tollRateProvider);
-		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager);
-		textOutput = new ConsoleTextOutput();
+		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager, vehicleDataOutput);
 
 		vehicleManager.SetNewTollPassages(5000);
-		textOutput.DisplayTollFeesForAllVehicles(vehicles);
+		vehicleManager.DisplayTollFeesForAllVehicles();
 	}
 }

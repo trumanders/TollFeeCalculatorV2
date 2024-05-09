@@ -46,7 +46,7 @@ public class FeeCalculator : IFeeCalculator
 		return _tollRateProvider.GetTollRate(date);
 	}
 
-	public int CalculateTotalFee(List<TollPassage> tollPassages)
+	public int GetTotalFeeForPassages(List<TollPassage> tollPassages)
 	{
 		var totalFee = tollPassages
 			.Where(passage => passage.IsFeeToPay)
