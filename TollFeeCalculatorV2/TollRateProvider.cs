@@ -38,10 +38,6 @@ public class TollRateProvider
 		if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday || date.Month == 7)
 			return true;
 
-		/* The if-statements have been removed and replaced by a comparison with a 
-		 * list. It is more readable and maintainable ana easier to add or
-		 * edit the dates that are set to toll-free.
-		 */
 		DateTime[] holidaysOnWeekdays = new DateTime[]
 		{
 		new DateTime(2024, 1, 1),
@@ -57,7 +53,7 @@ public class TollRateProvider
 		new DateTime(2024, 12, 26),
 		};
 
-		return date.Year == 2024 && holidaysOnWeekdays.Contains(date) || holidaysOnWeekdays.Contains(date.AddDays(1));
+		return date.Year == 2024 && (holidaysOnWeekdays.Contains(date.Date) || holidaysOnWeekdays.Contains(date.Date.AddDays(1)));
 	}
 }
 
