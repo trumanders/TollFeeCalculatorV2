@@ -51,9 +51,9 @@ public class FeeCalculator : IFeeCalculator
 		var totalFee = tollPassages
 			.Where(passage => passage.IsFeeToPay)
 			.GroupBy(passage => passage.PassageTime.Date)
-			.Sum(group => group.Sum(passage => passage.Fee));
+			.Sum(group => Math.Min(group.Sum(passage => passage.Fee), MAX_FEE));
 
-		return totalFee > 60 ? 60 : totalFee;
+		return totalFee;
 	}
 
 	private bool IsPassageWithinInterval(DateTime start, DateTime end, TimeSpan timeSpan)

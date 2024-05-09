@@ -9,6 +9,7 @@ public class Program
 	static IVehicleDataOutput vehicleDataOutput;
 
 	static List<IVehicle> vehicles = new List<IVehicle>();
+	static int numberOfPassages = 30;
 
 	static void Main(string[] args)
 	{
@@ -21,7 +22,7 @@ public class Program
 		feeCalculator = new FeeCalculator(tollRateProvider);
 		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager, vehicleDataOutput);
 
-		vehicleManager.SetNewTollPassages(5000);
+		vehicleManager.SetNewTollPassages(numberOfPassages);
 		vehicleManager.DisplayTollFeesForAllVehicles();
 	}
 }
