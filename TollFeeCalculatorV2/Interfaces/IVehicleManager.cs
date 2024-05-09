@@ -2,7 +2,7 @@
 {
     public interface IVehicleManager
     {
-        bool IsTollFreeVehicle(IVehicle vehicle);
+        bool IsTollFreeTypes(VehicleTypes types);
         void GenerateNewTollPassagesForAllVehicles(int numberOfPassages, TimeSpan timeSpan);
 		void DisplayTollFeesForAllVehicles();
 	}
