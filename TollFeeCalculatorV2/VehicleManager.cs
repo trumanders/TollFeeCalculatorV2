@@ -3,7 +3,7 @@ using TollFeeCalculatorV2.Interfaces;
 
 namespace TollFeeCalculatorV2
 {
-    public class VehicleManager : IVehicleManager
+	public class VehicleManager : IVehicleManager
 	{
 		List<IVehicle> _vehicles;
 		IFeeCalculator _feeCalculator;
@@ -16,11 +16,6 @@ namespace TollFeeCalculatorV2
 			_feeCalculator = feeCalculator;
 			_dateManager = dateManager;
 			_vehicleDataOutput = vehicleDataOutput;
-		}
-
-		public void AddVehicles(List<IVehicle> vehicles)
-		{
-			_vehicles.AddRange(vehicles);
 		}
 
 		public int GetNumberOfVehicles()
@@ -49,12 +44,12 @@ namespace TollFeeCalculatorV2
 			_vehicleDataOutput.DisplayTollFees(_vehicles[index], _feeCalculator.GetTotalFeeForPassages(_vehicles[index].TollPassages));
 		}
 
-		public void SetNewTollPassages(int numberOfPassages)
+		public void GenerateNewTollPassagesForAllVehicles(int numberOfPassages, TimeSpan timeSpan)
 		{
 			for (int i = 0; i < _vehicles.Count; i++)
 			{
 				_vehicles[i].TollPassages.Clear();
-				var newDates = _dateManager.GetRandomDates(numberOfPassages);
+				var newDates = _dateManager.GetRandomDates(numberOfPassages, timeSpan);
 				foreach (var date in newDates)
 				{
 					var fee = IsTollFreeVehicle(i) ? 0 : _feeCalculator.GetFeeByDate(date);

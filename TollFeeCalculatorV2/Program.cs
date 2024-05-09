@@ -7,9 +7,10 @@ public class Program
 	static IDateManager dateManager;
 	static TollRateProvider tollRateProvider;
 	static IVehicleDataOutput vehicleDataOutput;
-
 	static List<IVehicle> vehicles = new List<IVehicle>();
-	static int numberOfPassages = 30;
+
+	static int numberOfPassages = 300;
+	static TimeSpan timeSpan = new TimeSpan(0, 9, 0, 0);
 
 	static void Main(string[] args)
 	{
@@ -22,7 +23,7 @@ public class Program
 		feeCalculator = new FeeCalculator(tollRateProvider);
 		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager, vehicleDataOutput);
 
-		vehicleManager.SetNewTollPassages(numberOfPassages);
+		vehicleManager.GenerateNewTollPassagesForAllVehicles(numberOfPassages, timeSpan);
 		vehicleManager.DisplayTollFeesForAllVehicles();
 	}
 }

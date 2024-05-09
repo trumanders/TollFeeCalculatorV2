@@ -2,6 +2,6 @@
 {
     public interface IDateManager
     {
-        List<DateTime> GetRandomDates(int numberOfDates);
+        List<DateTime> GetRandomDates(int numberOfDates, TimeSpan timeSpan);
     }
 }

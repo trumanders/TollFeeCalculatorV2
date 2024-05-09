@@ -2,9 +2,8 @@
 {
     public interface IVehicleManager
     {
-        void AddVehicles(List<IVehicle> vehicles);
         bool IsTollFreeVehicle(int index);
-        void SetNewTollPassages(int numberOfPassages);
+        void GenerateNewTollPassagesForAllVehicles(int numberOfPassages, TimeSpan timeSpan);
 		int GetNumberOfVehicles();
 		void DisplayTollFeesForAllVehicles();
 		IVehicle GetVehicle(int index);
