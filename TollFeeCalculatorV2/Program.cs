@@ -2,28 +2,45 @@
 namespace TollFeeCalculatorV2;
 public class Program
 {
-	static IFeeCalculator feeCalculator;
-	static IVehicleManager vehicleManager;
-	static IDateManager dateManager;
-	static TollRateProvider tollRateProvider;
-	static IVehicleDataOutput vehicleDataOutput;
-	static List<IVehicle> vehicles = new List<IVehicle>();
+	private readonly IFeeCalculator _feeCalculator;
+	private readonly IVehicleManager _vehicleManager;
+	private readonly IDateManager _dateManager;
+	private readonly TollRateProvider _tollRateProvider;
+	private readonly IVehicleDataOutput _vehicleDataOutput;
+	private readonly List<IVehicle> _vehicles;
 
 	static int numberOfPassages = 300;
-	static TimeSpan timeSpan = new TimeSpan(0, 9, 0, 0);
+	static TimeSpan timeSpan = new TimeSpan(0, 0, 0, -1);
+
+	public Program()
+	{
+		_vehicles = new List<IVehicle>()
+		{
+			new Vehicle("Volvo 245", VehicleTypes.Car),
+			new Vehicle("Truck", VehicleTypes.Military)
+		};
+
+		_tollRateProvider = new TollRateProvider();
+		_dateManager = new DateManager();
+		_vehicleDataOutput = new VehicleDataOutput();
+		_feeCalculator = new FeeCalculator(_tollRateProvider);
+		_vehicleManager = new VehicleManager(_vehicles, _feeCalculator, _dateManager, _vehicleDataOutput);
+	}
 
 	static void Main(string[] args)
 	{
-		vehicles.Add(new Vehicle("Volvo 245", VehicleTypes.Car));
-		vehicles.Add(new Vehicle("Truck", VehicleTypes.Military));
+		var program = new Program();
+		program.Run();		
+	}
 
-		tollRateProvider = new TollRateProvider();
-		dateManager = new DateManager();
-		vehicleDataOutput = new VehicleDataOutput();
-		feeCalculator = new FeeCalculator(tollRateProvider);
-		vehicleManager = new VehicleManager(vehicles, feeCalculator, dateManager, vehicleDataOutput);
+	private void Run()
+	{
+		GenerateTollPassagesAndDisplayFees();
+	}
 
-		vehicleManager.GenerateNewTollPassagesForAllVehicles(numberOfPassages, timeSpan);
-		vehicleManager.DisplayTollFeesForAllVehicles();
+	private void GenerateTollPassagesAndDisplayFees()
+	{
+		_vehicleManager.GenerateNewTollPassagesForAllVehicles(numberOfPassages, timeSpan);
+		_vehicleManager.DisplayTollFeesForAllVehicles();
 	}
 }
