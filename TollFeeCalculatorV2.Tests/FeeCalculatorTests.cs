@@ -94,6 +94,37 @@ public class FeeCalculatorTests
 			new TollPassage(new DateTime(2024, 5, 10, 15, 35, 42), 22){ IsFeeToPay = true },
 			new TollPassage(new DateTime(2024, 5, 10, 16, 40, 42), 22){ IsFeeToPay = true },
 		}, 60);
+
+		// Passages over multiple days, some exceding max fee and some that does not
+		yield return new TestCaseData(new List<TollPassage>
+		{
+			new TollPassage(new DateTime(2024, 5, 10, 7, 15, 25), 22){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 10, 15, 31, 15), 22){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 10, 16, 41, 15), 22){ IsFeeToPay = true }, // 60 (66)
+
+			new TollPassage(new DateTime(2024, 5, 13, 6, 40, 42), 16){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 13, 8, 20, 42), 16){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 13, 15, 10, 42), 16){ IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 5, 13, 15, 40, 42), 22){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 13, 18, 15, 42), 9){ IsFeeToPay = true }, // 60 (63)
+
+			new TollPassage(new DateTime(2024, 5, 14, 9, 0, 10), 9){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 14, 10, 0, 10), 9){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 14, 11, 0, 10), 9){ IsFeeToPay = true }, // 27
+
+		}, 147);
+
+		// Test single fee within interval
+		yield return new TestCaseData(new List<TollPassage>
+		{
+			new TollPassage(new DateTime(2024, 5, 15, 9, 0, 0), 9){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 15, 10, 0, 0), 9){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 15, 11, 0, 0), 9){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 15, 11, 59, 59), 9){ IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 5, 15, 12, 0, 0), 9){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 15, 13, 0, 0), 9){ IsFeeToPay = true },
+
+		}, 45);
 	}
 
 	[Test, TestCaseSource(nameof(TollPassageTestCases))]
