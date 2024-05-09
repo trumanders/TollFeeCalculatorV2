@@ -11,7 +11,7 @@ public class FeeCalculatorTests
 	[Test]
 	public void SetFeeDue_SetsCorrectFeeDues()
 	{
-		var tollPassages = new List<TollPassage>
+		var tollPassagesMixed = new List<TollPassage>
 		{
 			new TollPassage(new DateTime(2024, 5, 7, 3, 47, 25), 0),
 			new TollPassage(new DateTime(2024, 5, 7, 4, 22, 15), 0),
@@ -30,20 +30,21 @@ public class FeeCalculatorTests
 			new TollPassage(new DateTime(2024, 5, 7, 23, 30, 11), 0)
 		};
 
-		var expectedFeeDue = new List<bool>
+		var expectedFeeDueMixed = new List<bool>
 		{
 			false, false, false, false, true, true, true, true, false, true, false, true, true, false, false
 		};
 
 		var tollRateProvider = A.Fake<TollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
-		sut.SetFeeDue(tollPassages);
+		sut.SetFeeDue(tollPassagesMixed);
 
-		Assert.That(tollPassages.Zip(expectedFeeDue, (tollPassage, expected) => tollPassage.IsFeeToPay == expected), Is.All.True);
+		Assert.That(tollPassagesMixed.Zip(expectedFeeDueMixed, (tollPassage, expected) => tollPassage.IsFeeToPay == expected), Is.All.True);
 	}
 
 	public static IEnumerable<TestCaseData> TollPassageTestCases()
 	{
+		// Passages during one day - less than max fee for one day
 		yield return new TestCaseData(new List<TollPassage>
 		{
 			new TollPassage(new DateTime(2024, 6, 17, 1, 15, 20), 0) { IsFeeToPay = false },
@@ -63,23 +64,32 @@ public class FeeCalculatorTests
 			new TollPassage(new DateTime(2024, 6, 17, 18, 35, 50), 0) { IsFeeToPay = false }
 		}, 49);
 
+
+		// Passages for holidays
 		yield return new TestCaseData(new List<TollPassage>
 		{
 			new TollPassage(new DateTime(2024, 1, 1, 6, 15, 0), 0) { IsFeeToPay = false },
-			new TollPassage(new DateTime(2024, 2, 3, 8, 50, 0), 9) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 3, 28, 6, 45, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 3, 28, 8, 50, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 3, 29, 6, 45, 0), 0) { IsFeeToPay = false },
 			new TollPassage(new DateTime(2024, 3, 29, 7, 30, 0), 0) { IsFeeToPay = false },
 			new TollPassage(new DateTime(2024, 4, 1, 15, 20, 0), 0) { IsFeeToPay = false },
 			new TollPassage(new DateTime(2024, 4, 30, 17, 10, 0), 0) { IsFeeToPay = false },
-			new TollPassage(new DateTime(2024, 5, 13, 14, 35, 0), 22) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 6, 19, 17, 15, 0), 16) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 7, 21, 6, 5, 0), 0) { IsFeeToPay = false },
-			new TollPassage(new DateTime(2024, 8, 16, 15, 25, 0), 22) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 9, 23, 8, 20, 0), 16) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 10, 7, 18, 10, 0), 9) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 11, 15, 6, 30, 0), 16) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 12, 5, 7, 50, 0), 22) { IsFeeToPay = true },
-			new TollPassage(new DateTime(2024, 12, 30, 17, 45, 0), 16) { IsFeeToPay = true }
+			new TollPassage(new DateTime(2024, 5, 1, 14, 35, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 5, 8, 17, 15, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 5, 9, 6, 5, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 6, 5, 15, 25, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 6, 6, 8, 20, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 12, 24, 18, 10, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 12, 25, 6, 30, 0), 0) { IsFeeToPay = false },
+			new TollPassage(new DateTime(2024, 12, 26, 7, 50, 0), 0) { IsFeeToPay = false },
+		}, 0);
+
+		yield return new TestCaseData(new List<TollPassage>
+		{
+			new TollPassage(new DateTime(2024, 5, 10, 7, 12, 25), 22){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 10, 8, 32, 15), 9){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 10, 15, 35, 42), 22){ IsFeeToPay = true },
+			new TollPassage(new DateTime(2024, 5, 10, 16, 40, 42), 22){ IsFeeToPay = true },
 		}, 60);
 	}
 
@@ -93,20 +103,23 @@ public class FeeCalculatorTests
 		Assert.That(actualFee, Is.EqualTo(expectedFee));
 	}
 
-	[TestCase("2024-01-01T02:34:56", 16)]
-	[TestCase("2024-03-28T05:48:23", 16)]
-	[TestCase("2024-03-29T13:15:44", 16)]
-	[TestCase("2024-04-01T06:27:09", 16)]
-	[TestCase("2024-04-30T03:19:21", 16)]
-	[TestCase("2024-05-01T18:40:37", 16)]
-	[TestCase("2024-05-08T07:54:11", 16)]
-	[TestCase("2024-05-09T20:36:48", 16)]
-	[TestCase("2024-06-05T22:58:02", 16)]
-	[TestCase("2024-06-06T04:07:29", 16)]
-	[TestCase("2024-12-24T12:30:55", 16)]
-	[TestCase("2024-12-25T09:22:43", 16)]
-	[TestCase("2024-12-26T00:15:07", 16)]
-	public void GetFeeByDate_ReturnsCorrectFee(DateTime dateTime, int expectedFee)
+	[TestCase("2024-01-01T14:34:56", 0)]
+	[TestCase("2024-01-05T14:34:56", 0)]
+	[TestCase("2024-03-28T09:48:23", 0)]
+	[TestCase("2024-03-29T13:15:44", 0)]
+	[TestCase("2024-04-01T11:27:09", 0)]
+	[TestCase("2024-04-30T10:19:21", 0)]
+	[TestCase("2024-05-01T18:40:37", 0)]
+	[TestCase("2024-05-08T07:54:11", 0)]
+	[TestCase("2024-05-09T11:36:48", 0)]
+	[TestCase("2024-06-05T10:58:02", 0)]
+	[TestCase("2024-06-06T14:07:29", 0)]
+	[TestCase("2024-06-21T13:07:29", 0)]
+	[TestCase("2024-06-22T09:07:29", 0)]
+	[TestCase("2024-12-24T12:30:55", 0)]
+	[TestCase("2024-12-25T09:22:43", 0)]
+	[TestCase("2024-12-26T08:15:07", 0)]
+	public void GetFeeByDate_ReturnsZeroFeeForHolidays(DateTime dateTime, int expectedFee)
 	{
 		var tollRateProvider = A.Fake<TollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
