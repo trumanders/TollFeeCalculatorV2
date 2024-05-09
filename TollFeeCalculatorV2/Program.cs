@@ -8,7 +8,7 @@ public class Program
 	private readonly IDateManager _dateManager;
 	private readonly TollRateProvider _tollRateProvider;
 	private readonly IVehicleDataOutput _vehicleDataOutput;
-	private List<IVehicle> _vehicles;
+	private List<IVehicle> _vehicles = new List<IVehicle>();
 
 	static int passageCount = 50;
 	static TimeSpan timeSpan = new TimeSpan(5, 0, 0, 0);
