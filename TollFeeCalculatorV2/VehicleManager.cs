@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using TollFeeCalculatorV2.Interfaces;
 
 namespace TollFeeCalculatorV2
@@ -14,16 +15,30 @@ namespace TollFeeCalculatorV2
 
 		public VehicleManager(List<IVehicle> vehicles, IFeeCalculator feeCalculator, IDateManager dateManager, IVehicleDataOutput vehicleDataOutput)
 		{
-			_vehicles = vehicles;
-			_feeCalculator = feeCalculator;
-			_dateManager = dateManager;
-			_vehicleDataOutput = vehicleDataOutput;
+			try
+			{
+				_vehicles = vehicles ?? throw new ArgumentNullException(nameof(vehicles));
+				_feeCalculator = feeCalculator ?? throw new ArgumentNullException(nameof(feeCalculator));
+				_dateManager = dateManager ?? throw new ArgumentNullException(nameof(dateManager));
+				_vehicleDataOutput = vehicleDataOutput ?? throw new ArgumentNullException(nameof(vehicleDataOutput));
+			}
+			catch (ArgumentNullException ex)
+			{
+				throw new Exception("Invalid input parameter.", ex);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error initializing VehicleManager", ex);
+			}
+			
 		}
 
 		public void DisplayTollFeesForAllVehicles()
 		{
-			Enumerable.Range(0, _vehicles.Count).ToList().ForEach(i =>
-				_vehicleDataOutput.DisplayTollFees(_vehicles[i], _feeCalculator.GetTotalFeeForPassages(_vehicles[i].TollPassages)));
+			foreach (var vehicle in _vehicles)
+			{
+				_vehicleDataOutput.DisplayTollFees(vehicle, _feeCalculator.GetTotalFeeForPassages(vehicle.TollPassages));
+			}
 		}
 
 		public void GenerateNewTollPassagesForAllVehicles(int numberOfPassages, TimeSpan timeSpan)
@@ -31,26 +46,28 @@ namespace TollFeeCalculatorV2
 			if (timeSpan <= TimeSpan.Zero)
 				return;
 
-			for (int i = 0; i < _vehicles.Count; i++)
+			foreach (var vehicle in _vehicles)
 			{
-				_vehicles[i].TollPassages.Clear();
+				vehicle.TollPassages.Clear();
 				var newDates = _dateManager.GetRandomDates(numberOfPassages, timeSpan);
+
 				foreach (var date in newDates)
 				{
-					var fee = IsTollFreeVehicle(i) ? 0 : _feeCalculator.GetFeeByDate(date);
-					_vehicles[i].TollPassages.Add(new TollPassage(date, fee));
+					var fee = IsTollFreeVehicle(vehicle) ? 0 : _feeCalculator.GetFeeByDate(date);
+					vehicle.TollPassages.Add(new TollPassage(date, fee));
 				}
 
-				_feeCalculator.SetFeeDue(_vehicles[i].TollPassages);
+				_feeCalculator.SetFeeDue(vehicle.TollPassages);
 			}
 		}
-		public bool IsTollFreeVehicle(int index)
+		public bool IsTollFreeVehicle(IVehicle vehicle)
 		{
-			if (_vehicles[index] == null) return false;
+			if (vehicle == null)
+				return false;
 
 			foreach (var tollFreeType in VehicleTypesManager.GetTollFreeVehicleTypes())
 			{
-				if ((_vehicles[index].Types & tollFreeType) != 0)
+				if ((vehicle.Types & tollFreeType) != 0)
 					return true;
 			}
 

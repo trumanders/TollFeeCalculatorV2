@@ -3,18 +3,43 @@ namespace TollFeeCalculatorV2;
 
 public class VehicleDataOutput : IVehicleDataOutput
 {
+	private const string PassageTimeHeader = "PASSAGE TIME";
+	private const string FeeHeader = "FEE";
+	private const string PayHeader = "PAY";
+	private const string TotalFeeHeader = "TOTAL FEE";
+	private const string Separator = "=======================================";
+
 	public void DisplayTollFees(IVehicle vehicle, int totalFee)
 	{
-		Console.WriteLine($"\n{vehicle.Name} ({GetVehicleTypes(vehicle)})\n");
-		Console.WriteLine($"{"PASSAGE TIME",-21}{"FEE",-5}{"PAY"}");
+		WriteVehicleHeader(vehicle);
+		WritePassageTimes(vehicle);
+		WriteTotalFee(totalFee);
+		WriteSeparator();
+	}
+
+	private void WriteVehicleHeader(IVehicle vehicle)
+	{
+		Console.WriteLine($"\n{vehicle.Name} ({GetVehicleTypes(vehicle)})");
+	}
+
+	private void WritePassageTimes(IVehicle vehicle)
+	{
+		Console.WriteLine($"{PassageTimeHeader,-23}{FeeHeader,-5}{PayHeader,5}");
 
 		foreach (var passageTime in vehicle.TollPassages)
 		{
-			Console.WriteLine($"{passageTime.PassageTime,-22}{passageTime.Fee,2}{(passageTime.IsFeeToPay ? "YES" : "NO"),5}");
+			Console.WriteLine($"{passageTime.PassageTime,-22}{passageTime.Fee,4}{(passageTime.IsFeeToPay ? "YES" : "NO"),7}");
 		}
+	}
 
-		Console.WriteLine($"TOTAL FEE = { totalFee }");	
-		Console.WriteLine("=======================================");
+	private void WriteTotalFee(int totalFee)
+	{
+		Console.WriteLine($"{TotalFeeHeader}{totalFee, 17}");
+	}
+
+	private void WriteSeparator()
+	{
+		Console.WriteLine(Separator);
 	}
 
 	public string GetVehicleTypes(IVehicle vehicle)

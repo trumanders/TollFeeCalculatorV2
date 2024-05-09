@@ -10,7 +10,19 @@ public class FeeCalculator : IFeeCalculator
 
 	public FeeCalculator(TollRateProvider tollRateProvider)
 	{
-		_tollRateProvider = tollRateProvider;
+		try
+		{
+			_tollRateProvider = tollRateProvider ?? throw new ArgumentNullException(nameof(tollRateProvider));
+		}
+		catch (ArgumentNullException ex)
+		{
+			throw new Exception("Invalid input parameter.", ex);
+		}
+		catch (Exception ex)
+		{
+			throw new Exception("Error initializing TollRateProvider", ex);
+		}
+		
 	}
 
 	public void SetFeeDue(List<TollPassage> tollPassages)

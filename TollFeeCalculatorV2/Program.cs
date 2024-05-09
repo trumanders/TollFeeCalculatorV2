@@ -1,5 +1,6 @@
 ﻿using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2;
+
 public class Program
 {
 	private readonly IFeeCalculator _feeCalculator;
@@ -7,30 +8,33 @@ public class Program
 	private readonly IDateManager _dateManager;
 	private readonly TollRateProvider _tollRateProvider;
 	private readonly IVehicleDataOutput _vehicleDataOutput;
-	private readonly List<IVehicle> _vehicles;
+	private List<IVehicle> _vehicles;
 
-	static int numberOfPassages = 300;
-	static TimeSpan timeSpan = new TimeSpan(3, 0, 0, 0);
+	static int passageCount = 50;
+	static TimeSpan timeSpan = new TimeSpan(5, 0, 0, 0);
 
 	public Program()
 	{
-		_vehicles = new List<IVehicle>()
+		try
 		{
-			new Vehicle("Volvo 245", VehicleTypes.Car),
-			new Vehicle("Truck", VehicleTypes.Military)
-		};
+			InitializeVehicles();
 
-		_tollRateProvider = new TollRateProvider();
-		_dateManager = new DateManager();
-		_vehicleDataOutput = new VehicleDataOutput();
-		_feeCalculator = new FeeCalculator(_tollRateProvider);
-		_vehicleManager = new VehicleManager(_vehicles, _feeCalculator, _dateManager, _vehicleDataOutput);
+			_tollRateProvider = new TollRateProvider();
+			_dateManager = new DateManager();
+			_vehicleDataOutput = new VehicleDataOutput();			
+			_feeCalculator = new FeeCalculator(_tollRateProvider);
+			_vehicleManager = new VehicleManager(_vehicles, _feeCalculator, _dateManager, _vehicleDataOutput);
+		}
+		catch (Exception ex) 
+		{
+			Console.WriteLine(ex.ToString());
+		}
 	}
 
 	static void Main(string[] args)
 	{
 		var program = new Program();
-		program.Run();		
+		program.Run();
 	}
 
 	private void Run()
@@ -40,7 +44,16 @@ public class Program
 
 	private void GenerateTollPassagesAndDisplayFees()
 	{
-		_vehicleManager.GenerateNewTollPassagesForAllVehicles(numberOfPassages, timeSpan);
+		_vehicleManager.GenerateNewTollPassagesForAllVehicles(passageCount, timeSpan);
 		_vehicleManager.DisplayTollFeesForAllVehicles();
+	}
+
+	private void InitializeVehicles()
+	{
+		_vehicles = new List<IVehicle>()
+		{
+			new Vehicle("Volvo 245", VehicleTypes.Car),
+			new Vehicle("Truck", VehicleTypes.Military)
+		};
 	}
 }
