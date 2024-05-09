@@ -45,21 +45,19 @@ public class TollRateProvider
 		DateTime[] holidaysOnWeekdays = new DateTime[]
 		{
 		new DateTime(2024, 1, 1),
-		new DateTime(2024, 3, 28),
+		new DateTime(2024, 1, 6),
 		new DateTime(2024, 3, 29),
 		new DateTime(2024, 4, 1),
-		new DateTime(2024, 4, 30),
 		new DateTime(2024, 5, 1),
-		new DateTime(2024, 5, 8),
 		new DateTime(2024, 5, 9),
-		new DateTime(2024, 6, 5),
 		new DateTime(2024, 6, 6),
-		new DateTime(2024, 12, 24),
+		new DateTime(2024, 6, 22),
+		new DateTime(2024, 11, 2),
 		new DateTime(2024, 12, 25),
 		new DateTime(2024, 12, 26),
 		};
 
-		return date.Year == 2024 && holidaysOnWeekdays.Contains(date);
+		return date.Year == 2024 && holidaysOnWeekdays.Contains(date) || holidaysOnWeekdays.Contains(date.AddDays(1));
 	}
 }
 
