@@ -1,9 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using TollFeeCalculatorV2.Interfaces;
-
+﻿using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2
 {
 	public class VehicleManager : IVehicleManager
@@ -53,11 +48,11 @@ namespace TollFeeCalculatorV2
 
 				foreach (var date in newDates)
 				{
-					var fee = IsTollFreeVehicle(vehicle) ? 0 : _feeCalculator.GetFeeByDate(date);
-					vehicle.TollPassages.Add(new TollPassage(date, fee));
+					vehicle.TollPassages.Add(new TollPassage(date, _feeCalculator.GetFeeByDate(date)));
 				}
 
-				_feeCalculator.SetFeeDue(vehicle.TollPassages);
+				if (!IsTollFreeVehicle(vehicle))
+					_feeCalculator.SetFeeDue(vehicle.TollPassages);
 			}
 		}
 		public bool IsTollFreeVehicle(IVehicle vehicle)

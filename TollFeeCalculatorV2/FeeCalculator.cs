@@ -22,7 +22,6 @@ public class FeeCalculator : IFeeCalculator
 		{
 			throw new Exception("Error initializing TollRateProvider", ex);
 		}
-		
 	}
 
 	public void SetFeeDue(List<TollPassage> tollPassages)
