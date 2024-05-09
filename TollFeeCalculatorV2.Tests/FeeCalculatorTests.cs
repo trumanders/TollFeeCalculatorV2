@@ -2,6 +2,9 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using FakeItEasy;
 using NUnit.Framework.Internal;
+using TollFeeCalculatorV2.Interfaces;
+using FakeItEasy.Core;
+using TollFeeCalculatorV2;
 namespace TollFeeCalculatorV2.Tests;
 
 [Parallelizable(ParallelScope.Self)]
@@ -119,6 +122,7 @@ public class FeeCalculatorTests
 	[TestCase("2024-12-24T12:30:55", 0)]
 	[TestCase("2024-12-25T09:22:43", 0)]
 	[TestCase("2024-12-26T08:15:07", 0)]
+
 	public void GetFeeByDate_ReturnsZeroFeeForHolidays(DateTime dateTime, int expectedFee)
 	{
 		var tollRateProvider = A.Fake<TollRateProvider>();
@@ -126,4 +130,60 @@ public class FeeCalculatorTests
 		var actualFee = sut.GetFeeByDate(dateTime);
 		Assert.That(actualFee, Is.EqualTo(expectedFee));
 	}
+
+	[TestCase("2024-05-10T06:00:00", 9)]
+	[TestCase("2024-05-10T06:29:59", 9)]
+	[TestCase("2024-05-10T08:30:00", 9)]
+	[TestCase("2024-05-10T14:59:59", 9)]
+	[TestCase("2024-05-10T18:00:00", 9)]
+	[TestCase("2024-05-10T18:29:59", 9)]
+
+	[TestCase("2024-05-10T06:30:00", 16)]
+	[TestCase("2024-05-10T06:59:59", 16)]
+	[TestCase("2024-05-10T08:00:00", 16)]
+	[TestCase("2024-05-10T08:29:59", 16)]
+	[TestCase("2024-05-10T15:00:00", 16)]
+	[TestCase("2024-05-10T15:29:59", 16)]
+	[TestCase("2024-05-10T17:00:00", 16)]
+	[TestCase("2024-05-10T17:59:59", 16)]
+
+	[TestCase("2024-05-10T07:00:00", 22)]
+	[TestCase("2024-05-10T07:59:59", 22)]
+	[TestCase("2024-05-10T15:30:00", 22)]
+	[TestCase("2024-05-10T16:59:59", 22)]
+	public void GetFeeByDate_ReturnsCorrectFeeAtRateChangeTimes(DateTime dateTime, int expectedFee)
+	{
+		var tollRateProvider = A.Fake<TollRateProvider>();
+		var sut = new FeeCalculator(tollRateProvider);
+		var actualFee = sut.GetFeeByDate(dateTime);
+		Assert.That(actualFee, Is.EqualTo(expectedFee));
+	}
+
+	[TestCase(VehicleTypes.Car, false)]
+	[TestCase(VehicleTypes.Tractor, true)]
+	[TestCase(VehicleTypes.Emergency, true)]
+	[TestCase(VehicleTypes.Diplomat, true)]
+	[TestCase(VehicleTypes.Foreign, true)]
+	[TestCase(VehicleTypes.Military, true)]
+	[TestCase(VehicleTypes.Trailer, true)]
+	[TestCase(VehicleTypes.LargeBus, true)]
+	[TestCase(VehicleTypes.Car | VehicleTypes.Military, true)]
+	[TestCase(VehicleTypes.Car | VehicleTypes.Emergency, true)]
+	[TestCase(VehicleTypes.Car | VehicleTypes.Bus, false)]
+	[TestCase(VehicleTypes.Car | VehicleTypes.LargeBus, true)]
+	[TestCase(VehicleTypes.Car | VehicleTypes.Caravan, false)]
+	[TestCase(VehicleTypes.Caravan | VehicleTypes.Military, true)]
+	public void IsTollFreeVehicle_ReturnsCorrectBool(VehicleTypes types, bool expectedResult)
+	{
+		var vehicles = A.Fake<List<IVehicle>>();
+		var feeCalc = A.Fake<FeeCalculator>();
+		var dateMan = A.Fake<DateManager>();
+		var vehicleDataOutput = A.Fake<VehicleDataOutput>();
+		
+		var sut = new VehicleManager(vehicles, feeCalc, dateMan, vehicleDataOutput);
+		var actualResult = sut.IsTollFreeTypes(types);
+
+		Assert.That(actualResult, Is.EqualTo(expectedResult));
+	}
 }
+

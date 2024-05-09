@@ -38,7 +38,7 @@ namespace TollFeeCalculatorV2
 
 		public void GenerateNewTollPassagesForAllVehicles(int numberOfPassages, TimeSpan timeSpan)
 		{
-			if (timeSpan <= TimeSpan.Zero)
+			if (timeSpan <= TimeSpan.Zero || numberOfPassages < 1)
 				return;
 
 			foreach (var vehicle in _vehicles)
@@ -51,18 +51,15 @@ namespace TollFeeCalculatorV2
 					vehicle.TollPassages.Add(new TollPassage(date, _feeCalculator.GetFeeByDate(date)));
 				}
 
-				if (!IsTollFreeVehicle(vehicle))
+				if (!IsTollFreeTypes(vehicle.Types))
 					_feeCalculator.SetFeeDue(vehicle.TollPassages);
 			}
 		}
-		public bool IsTollFreeVehicle(IVehicle vehicle)
+		public bool IsTollFreeTypes(VehicleTypes types)
 		{
-			if (vehicle == null)
-				return false;
-
 			foreach (var tollFreeType in VehicleTypesManager.GetTollFreeVehicleTypes())
 			{
-				if ((vehicle.Types & tollFreeType) != 0)
+				if ((types & tollFreeType) != 0)
 					return true;
 			}
 
