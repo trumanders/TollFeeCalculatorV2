@@ -1,14 +1,16 @@
 ﻿
+using System;
+using System.Collections.Generic;
 using TollFeeCalculatorV2.Interfaces;
 
 namespace TollFeeCalculatorV2
 {
 	public class VehicleManager : IVehicleManager
 	{
-		List<IVehicle> _vehicles;
-		IFeeCalculator _feeCalculator;
-		IDateManager _dateManager;
-		IVehicleDataOutput _vehicleDataOutput;
+		private readonly List<IVehicle> _vehicles;
+		private readonly IFeeCalculator _feeCalculator;
+		private readonly IDateManager _dateManager;
+		private readonly IVehicleDataOutput _vehicleDataOutput;
 
 		public VehicleManager(List<IVehicle> vehicles, IFeeCalculator feeCalculator, IDateManager dateManager, IVehicleDataOutput vehicleDataOutput)
 		{
@@ -18,34 +20,17 @@ namespace TollFeeCalculatorV2
 			_vehicleDataOutput = vehicleDataOutput;
 		}
 
-		public int GetNumberOfVehicles()
-		{
-			return _vehicles.Count;
-		}
-
-		public int GetTotalFee(int vehicleIndex)
-		{
-			return _feeCalculator.GetTotalFeeForPassages(_vehicles[vehicleIndex].TollPassages);
-		}
-
-		public IVehicle GetVehicle(int index)
-		{
-			return _vehicles[index];
-		}
-
 		public void DisplayTollFeesForAllVehicles()
 		{
-			Enumerable.Range(0, _vehicles.Count)
-			.ToList().ForEach(DisplayTollFees);	
-		}
-
-		public void DisplayTollFees(int index)
-		{
-			_vehicleDataOutput.DisplayTollFees(_vehicles[index], _feeCalculator.GetTotalFeeForPassages(_vehicles[index].TollPassages));
+			Enumerable.Range(0, _vehicles.Count).ToList().ForEach(i =>
+				_vehicleDataOutput.DisplayTollFees(_vehicles[i], _feeCalculator.GetTotalFeeForPassages(_vehicles[i].TollPassages)));
 		}
 
 		public void GenerateNewTollPassagesForAllVehicles(int numberOfPassages, TimeSpan timeSpan)
 		{
+			if (timeSpan <= TimeSpan.Zero)
+				return;
+
 			for (int i = 0; i < _vehicles.Count; i++)
 			{
 				_vehicles[i].TollPassages.Clear();

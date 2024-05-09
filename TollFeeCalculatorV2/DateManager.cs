@@ -4,6 +4,7 @@ namespace TollFeeCalculatorV2;
 public class DateManager : IDateManager
 {
 	const int YEAR = 2024;
+
 	public List<DateTime> GetRandomDates(int numberOfPassages, TimeSpan timeSpan)
 	{
 		TimeSpan timeSpanOfYear = new DateTime(2025, 1, 1) - new DateTime(2024, 1, 1);

@@ -10,7 +10,7 @@ public class Program
 	private readonly List<IVehicle> _vehicles;
 
 	static int numberOfPassages = 300;
-	static TimeSpan timeSpan = new TimeSpan(0, 0, 0, -1);
+	static TimeSpan timeSpan = new TimeSpan(3, 0, 0, 0);
 
 	public Program()
 	{
