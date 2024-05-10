@@ -1,6 +1,9 @@
 ﻿using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2;
 
+/// <summary>
+/// Class responsible for displaying data related to vehicles
+/// </summary>
 public class VehicleDataOutput : IVehicleDataOutput
 {
 	private const string PassageTimeHeader = "PASSAGE TIME";
@@ -15,6 +18,21 @@ public class VehicleDataOutput : IVehicleDataOutput
 		WritePassageTimes(vehicle);
 		WriteTotalFee(totalFee);
 		WriteSeparator();
+	}
+
+	/// <summary>
+	/// Get the types for a vehicle.
+	/// </summary>
+	/// <param name="vehicle">The vehicle to get the types for.</param>
+	/// <returns>The types as a string.</returns>
+	public string GetVehicleTypes(IVehicle vehicle)
+	{
+		return string.Join(", ",
+			Enum.GetValues(typeof(VehicleTypes))
+			.Cast<VehicleTypes>()
+			.Where(type => (vehicle.Types & type) == type && type != 0)
+			.Select(s => s.ToString())
+		);
 	}
 
 	private void WriteVehicleHeader(IVehicle vehicle)
@@ -42,13 +60,5 @@ public class VehicleDataOutput : IVehicleDataOutput
 		Console.WriteLine(Separator);
 	}
 
-	public string GetVehicleTypes(IVehicle vehicle)
-	{
-		return string.Join(", ",
-			Enum.GetValues(typeof(VehicleTypes))
-			.Cast<VehicleTypes>()
-			.Where(type => (vehicle.Types & type) == type && type != 0)
-			.Select(s => s.ToString())
-		);
-	}
+
 }

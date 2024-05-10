@@ -6,6 +6,12 @@ public class TollRateProvider
 	private const int FEE_MEDIUM = 16;
 	private const int FEE_HIGH = 22;
 
+	/// <summary>
+	/// Get the toll rate for a given DateTime based on specific intervals and
+	/// whether the date is a toll free date or not.
+	/// </summary>
+	/// <param name="dateTime">The date to get the toll rate for.</param>
+	/// <returns>The fee associated with the given DateTime.</returns>
 	public int GetTollRate(DateTime dateTime)
 	{
 		if (IsTollFreeDate(dateTime))
@@ -32,6 +38,11 @@ public class TollRateProvider
 			return 0;
 	}
 
+	/// <summary>
+	/// Checks whether a given DateTime is a toll free date.
+	/// </summary>
+	/// <param name="date">The DateTime to check.</param>
+	/// <returns>True if the parameter date is a toll free date. Otherwise false.</returns>
 	private bool IsTollFreeDate(DateTime date)
 	{
 		// All saturdays and sundays, and july are toll-free

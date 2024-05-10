@@ -1,8 +1,8 @@
 ﻿namespace TollFeeCalculatorV2;
 
-/* Using this enum with flagging to assign more than
- * one type to a vehicle	 
- */
+/// <summary>
+/// List of vehicle types
+/// </summary>
 public enum VehicleTypes
 {
 	Motorbike = 1,

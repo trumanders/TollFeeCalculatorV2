@@ -5,9 +5,17 @@ public class DateManager : IDateManager
 {
 	const int YEAR = 2024;
 
+	/// <summary>
+	/// Generate a list of random DateTime based on the provided TimeSpan and passageCount within the year 2024.
+	/// </summary>
+	/// <param name="passageCount">The number of passages to generate dates for</param>
+	/// <param name="timeSpan">The time span within which the dates should be randomized.</param>
+	/// <returns></returns>
+	/// <exception cref="Exception"></exception>
 	public List<DateTime> GetRandomDates(int passageCount, TimeSpan timeSpan)
 	{
 		TimeSpan yearTimeSpan = new DateTime(2025, 1, 1) - new DateTime(2024, 1, 1);
+
 		if (timeSpan > yearTimeSpan)
 		{
 			throw new Exception("This program is designed to work with year 2024 only");
