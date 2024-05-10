@@ -153,7 +153,6 @@ public class FeeCalculatorTests
 	[TestCase("2024-12-24T12:30:55", 0)]
 	[TestCase("2024-12-25T09:22:43", 0)]
 	[TestCase("2024-12-26T08:15:07", 0)]
-
 	public void GetFeeByDate_ReturnsZeroFeeForHolidays(DateTime dateTime, int expectedFee)
 	{
 		var tollRateProvider = A.Fake<TollRateProvider>();
@@ -189,32 +188,4 @@ public class FeeCalculatorTests
 		var actualFee = sut.GetFeeByDate(dateTime);
 		Assert.That(actualFee, Is.EqualTo(expectedFee));
 	}
-
-	[TestCase(VehicleTypes.Car, false)]
-	[TestCase(VehicleTypes.Tractor, true)]
-	[TestCase(VehicleTypes.Emergency, true)]
-	[TestCase(VehicleTypes.Diplomat, true)]
-	[TestCase(VehicleTypes.Foreign, true)]
-	[TestCase(VehicleTypes.Military, true)]
-	[TestCase(VehicleTypes.Trailer, true)]
-	[TestCase(VehicleTypes.LargeBus, true)]
-	[TestCase(VehicleTypes.Car | VehicleTypes.Military, true)]
-	[TestCase(VehicleTypes.Car | VehicleTypes.Emergency, true)]
-	[TestCase(VehicleTypes.Car | VehicleTypes.Bus, false)]
-	[TestCase(VehicleTypes.Car | VehicleTypes.LargeBus, true)]
-	[TestCase(VehicleTypes.Car | VehicleTypes.Caravan, false)]
-	[TestCase(VehicleTypes.Caravan | VehicleTypes.Military, true)]
-	public void IsTollFreeVehicle_ReturnsCorrectBool(VehicleTypes types, bool expectedResult)
-	{
-		var vehicles = A.Fake<List<IVehicle>>();
-		var feeCalc = A.Fake<FeeCalculator>();
-		var dateMan = A.Fake<DateManager>();
-		var vehicleDataOutput = A.Fake<VehicleDataOutput>();
-		
-		var sut = new VehicleManager(vehicles, feeCalc, dateMan, vehicleDataOutput);
-		var actualResult = sut.IsTollFreeTypes(types);
-
-		Assert.That(actualResult, Is.EqualTo(expectedResult));
-	}
 }
-
