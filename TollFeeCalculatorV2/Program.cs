@@ -1,4 +1,6 @@
-﻿using TollFeeCalculatorV2.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2;
 
 public class Program
@@ -8,33 +10,50 @@ public class Program
 	private readonly IDateManager _dateManager;
 	private readonly TollRateProvider _tollRateProvider;
 	private readonly IVehicleDataOutput _vehicleDataOutput;
-	private List<IVehicle> _vehicles = new List<IVehicle>();
+	private static List<IVehicle> _vehicles = new List<IVehicle>();
 
 	static int passageCount = 50;
 	static TimeSpan timeSpan = new TimeSpan(5, 0, 0, 0);
 
-	public Program()
+	public Program(
+		IFeeCalculator feeCalculator,
+		IVehicleManager vehicleManager,
+		IDateManager dateManager,
+		TollRateProvider tollRateProvider,
+		IVehicleDataOutput vehicleDataOutput)
 	{
-		try
-		{
-			InitializeVehicles();
-
-			_tollRateProvider = new TollRateProvider();
-			_dateManager = new DateManager();
-			_vehicleDataOutput = new VehicleDataOutput();			
-			_feeCalculator = new FeeCalculator(_tollRateProvider);
-			_vehicleManager = new VehicleManager(_vehicles, _feeCalculator, _dateManager, _vehicleDataOutput);
-		}
-		catch (Exception ex) 
-		{
-			Console.WriteLine(ex.ToString());
-		}
+		
+		_feeCalculator = feeCalculator;
+		_vehicleManager = vehicleManager;
+		_dateManager = dateManager;
+		_tollRateProvider = tollRateProvider;
+		_vehicleDataOutput = vehicleDataOutput;
+		
 	}
 
 	static void Main(string[] args)
 	{
-		var program = new Program();
-		program.Run();
+		InitializeVehicles();
+		var serviceCollection = new ServiceCollection();
+		ConfigureServices(serviceCollection);
+		var serviceProvider = serviceCollection.BuildServiceProvider();
+
+		try
+		{
+			var program = new Program(
+				serviceProvider.GetRequiredService<IFeeCalculator>(),
+				serviceProvider.GetRequiredService<IVehicleManager>(),
+				serviceProvider.GetRequiredService<IDateManager>(),
+				serviceProvider.GetRequiredService<TollRateProvider>(),
+				serviceProvider.GetRequiredService<IVehicleDataOutput>()
+			);
+
+			program.Run();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.ToString());
+		}
 	}
 
 	private void Run()
@@ -48,12 +67,34 @@ public class Program
 		_vehicleManager.DisplayTollFeesForAllVehicles();
 	}
 
-	private void InitializeVehicles()
+	private static void InitializeVehicles()
 	{
 		_vehicles = new List<IVehicle>()
 		{
 			new Vehicle("Volvo 245", VehicleTypes.Car),
 			new Vehicle("Truck", VehicleTypes.Military)
 		};
+	}
+
+	private static void ConfigureServices(IServiceCollection services)
+	{
+		services
+			.AddSingleton<IVehicleDataOutput, VehicleDataOutput>()
+			.AddSingleton<IDateManager, DateManager>()
+			.AddSingleton<TollRateProvider>()
+			.AddSingleton<IFeeCalculator, FeeCalculator>(provider => new FeeCalculator(provider.GetRequiredService<TollRateProvider>()))
+			.AddSingleton<IVehicleManager, VehicleManager>(provider =>
+			{
+				var tollRateProvider = provider.GetRequiredService<TollRateProvider>();
+				var feeCalculator = provider.GetRequiredService<IFeeCalculator>();
+				var dateManager = provider.GetRequiredService<IDateManager>();
+				var vehicleDataOutput = provider.GetRequiredService<IVehicleDataOutput>();
+				return new VehicleManager(
+					_vehicles,
+					provider.GetRequiredService<IFeeCalculator>(),
+					provider.GetRequiredService<IDateManager>(),
+					provider.GetRequiredService<IVehicleDataOutput>()
+					);
+			});
 	}
 }
