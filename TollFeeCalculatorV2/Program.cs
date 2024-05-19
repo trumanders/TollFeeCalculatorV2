@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+using Microsoft.Extensions.Hosting;
 using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2;
 
@@ -22,38 +22,66 @@ public class Program
 		TollRateProvider tollRateProvider,
 		IVehicleDataOutput vehicleDataOutput)
 	{
-		
+
 		_feeCalculator = feeCalculator;
 		_vehicleManager = vehicleManager;
 		_dateManager = dateManager;
 		_tollRateProvider = tollRateProvider;
 		_vehicleDataOutput = vehicleDataOutput;
-		
 	}
 
 	static void Main(string[] args)
 	{
 		InitializeVehicles();
-		var serviceCollection = new ServiceCollection();
-		ConfigureServices(serviceCollection);
-		var serviceProvider = serviceCollection.BuildServiceProvider();
+		var host = CreateHostBuilder(args).Build();
 
-		try
+		using (var scope = host.Services.CreateScope())
 		{
-			var program = new Program(
-				serviceProvider.GetRequiredService<IFeeCalculator>(),
-				serviceProvider.GetRequiredService<IVehicleManager>(),
-				serviceProvider.GetRequiredService<IDateManager>(),
-				serviceProvider.GetRequiredService<TollRateProvider>(),
-				serviceProvider.GetRequiredService<IVehicleDataOutput>()
-			);
+			var serviceProvider = scope.ServiceProvider;
 
-			program.Run();
+			try
+			{
+				var program = new Program(
+					serviceProvider.GetRequiredService<IFeeCalculator>(),
+					serviceProvider.GetRequiredService<IVehicleManager>(),
+					serviceProvider.GetRequiredService<IDateManager>(),
+					serviceProvider.GetRequiredService<TollRateProvider>(),
+					serviceProvider.GetRequiredService<IVehicleDataOutput>()
+				);
+
+				program.Run();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+			}
 		}
-		catch (Exception ex)
+	}
+	
+
+	private static IHostBuilder CreateHostBuilder(string[] args)
+	{
+		return Host.CreateDefaultBuilder(args).ConfigureServices((services) =>
 		{
-			Console.WriteLine(ex.ToString());
-		}
+			services
+			.AddSingleton<IVehicleDataOutput, VehicleDataOutput>()
+			.AddSingleton<IDateManager, DateManager>()
+			.AddSingleton<TollRateProvider>()
+			.AddSingleton<IFeeCalculator, FeeCalculator>(provider => new FeeCalculator(provider.GetRequiredService<TollRateProvider>()))
+			.AddSingleton<IVehicleManager, VehicleManager>(provider =>
+			{
+				var tollRateProvider = provider.GetRequiredService<TollRateProvider>();
+				var feeCalculator = provider.GetRequiredService<IFeeCalculator>();
+				var dateManager = provider.GetRequiredService<IDateManager>();
+				var vehicleDataOutput = provider.GetRequiredService<IVehicleDataOutput>();
+				return new VehicleManager(
+					_vehicles,
+					provider.GetRequiredService<IFeeCalculator>(),
+					provider.GetRequiredService<IDateManager>(),
+					provider.GetRequiredService<IVehicleDataOutput>()
+					);
+			});
+		});
 	}
 
 	private void Run()
@@ -75,26 +103,5 @@ public class Program
 			new Vehicle("Truck", VehicleTypes.Military)
 		};
 	}
-
-	private static void ConfigureServices(IServiceCollection services)
-	{
-		services
-			.AddSingleton<IVehicleDataOutput, VehicleDataOutput>()
-			.AddSingleton<IDateManager, DateManager>()
-			.AddSingleton<TollRateProvider>()
-			.AddSingleton<IFeeCalculator, FeeCalculator>(provider => new FeeCalculator(provider.GetRequiredService<TollRateProvider>()))
-			.AddSingleton<IVehicleManager, VehicleManager>(provider =>
-			{
-				var tollRateProvider = provider.GetRequiredService<TollRateProvider>();
-				var feeCalculator = provider.GetRequiredService<IFeeCalculator>();
-				var dateManager = provider.GetRequiredService<IDateManager>();
-				var vehicleDataOutput = provider.GetRequiredService<IVehicleDataOutput>();
-				return new VehicleManager(
-					_vehicles,
-					provider.GetRequiredService<IFeeCalculator>(),
-					provider.GetRequiredService<IDateManager>(),
-					provider.GetRequiredService<IVehicleDataOutput>()
-					);
-			});
-	}
 }
+
