@@ -1,6 +1,8 @@
-﻿namespace TollFeeCalculatorV2;
+﻿using TollFeeCalculatorV2.Interfaces;
 
-public class TollRateProvider
+namespace TollFeeCalculatorV2;
+
+public class TollRateProvider : ITollRateProvider
 {
 	private const int FEE_LOW = 9;
 	private const int FEE_MEDIUM = 16;

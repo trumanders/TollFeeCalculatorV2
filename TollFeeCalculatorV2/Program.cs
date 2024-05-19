@@ -5,29 +5,15 @@ namespace TollFeeCalculatorV2;
 
 public class Program
 {
-	private readonly IFeeCalculator _feeCalculator;
 	private readonly IVehicleManager _vehicleManager;
-	private readonly IDateManager _dateManager;
-	private readonly TollRateProvider _tollRateProvider;
-	private readonly IVehicleDataOutput _vehicleDataOutput;
 	private static List<IVehicle> _vehicles = new List<IVehicle>();
 
 	static int passageCount = 50;
 	static TimeSpan timeSpan = new TimeSpan(5, 0, 0, 0);
 
-	public Program(
-		IFeeCalculator feeCalculator,
-		IVehicleManager vehicleManager,
-		IDateManager dateManager,
-		TollRateProvider tollRateProvider,
-		IVehicleDataOutput vehicleDataOutput)
+	public Program(IVehicleManager vehicleManager)
 	{
-
-		_feeCalculator = feeCalculator;
 		_vehicleManager = vehicleManager;
-		_dateManager = dateManager;
-		_tollRateProvider = tollRateProvider;
-		_vehicleDataOutput = vehicleDataOutput;
 	}
 
 	static void Main(string[] args)
@@ -41,14 +27,7 @@ public class Program
 
 			try
 			{
-				var program = new Program(
-					serviceProvider.GetRequiredService<IFeeCalculator>(),
-					serviceProvider.GetRequiredService<IVehicleManager>(),
-					serviceProvider.GetRequiredService<IDateManager>(),
-					serviceProvider.GetRequiredService<TollRateProvider>(),
-					serviceProvider.GetRequiredService<IVehicleDataOutput>()
-				);
-
+				var program = new Program(serviceProvider.GetRequiredService<IVehicleManager>());
 				program.Run();
 			}
 			catch (Exception ex)
@@ -66,11 +45,11 @@ public class Program
 			services
 			.AddSingleton<IVehicleDataOutput, VehicleDataOutput>()
 			.AddSingleton<IDateManager, DateManager>()
-			.AddSingleton<TollRateProvider>()
-			.AddSingleton<IFeeCalculator, FeeCalculator>(provider => new FeeCalculator(provider.GetRequiredService<TollRateProvider>()))
+			.AddSingleton<ITollRateProvider, TollRateProvider>()
+			.AddSingleton<IFeeCalculator, FeeCalculator>(provider => new FeeCalculator(provider.GetRequiredService<ITollRateProvider>()))
 			.AddSingleton<IVehicleManager, VehicleManager>(provider =>
 			{
-				var tollRateProvider = provider.GetRequiredService<TollRateProvider>();
+				var tollRateProvider = provider.GetRequiredService<ITollRateProvider>();
 				var feeCalculator = provider.GetRequiredService<IFeeCalculator>();
 				var dateManager = provider.GetRequiredService<IDateManager>();
 				var vehicleDataOutput = provider.GetRequiredService<IVehicleDataOutput>();

@@ -1,10 +1,6 @@
-using NUnit.Framework;
-using System.Collections.Generic;
 using FakeItEasy;
 using NUnit.Framework.Internal;
 using TollFeeCalculatorV2.Interfaces;
-using FakeItEasy.Core;
-using TollFeeCalculatorV2;
 namespace TollFeeCalculatorV2.Tests;
 
 [Parallelizable(ParallelScope.Self)]
@@ -38,7 +34,7 @@ public class FeeCalculatorTests
 			false, false, false, false, true, true, true, true, false, true, false, true, true, false, false
 		};
 
-		var tollRateProvider = A.Fake<TollRateProvider>();
+		var tollRateProvider = A.Fake<ITollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
 		sut.SetFeeDue(tollPassagesMixed);
 
@@ -130,7 +126,7 @@ public class FeeCalculatorTests
 	[Test, TestCaseSource(nameof(TollPassageTestCases))]
 	public void GetTotalFeeForPassages_ReturnsCorrectTotalFee(List<TollPassage> tollPassages, int expectedFee)
 	{
-		var tollRateProvider = A.Fake<TollRateProvider>();
+		var tollRateProvider = A.Fake<ITollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
 		var actualFee = sut.GetTotalFeeForPassages(tollPassages);
 
@@ -155,7 +151,7 @@ public class FeeCalculatorTests
 	[TestCase("2024-12-26T08:15:07", 0)]
 	public void GetFeeByDate_ReturnsZeroFeeForHolidays(DateTime dateTime, int expectedFee)
 	{
-		var tollRateProvider = A.Fake<TollRateProvider>();
+		var tollRateProvider = A.Fake<ITollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
 		var actualFee = sut.GetFeeByDate(dateTime);
 		Assert.That(actualFee, Is.EqualTo(expectedFee));
@@ -183,7 +179,7 @@ public class FeeCalculatorTests
 	[TestCase("2024-05-10T16:59:59", 22)]
 	public void GetFeeByDate_ReturnsCorrectFeeAtRateChangeTimes(DateTime dateTime, int expectedFee)
 	{
-		var tollRateProvider = A.Fake<TollRateProvider>();
+		var tollRateProvider = A.Fake<ITollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
 		var actualFee = sut.GetFeeByDate(dateTime);
 		Assert.That(actualFee, Is.EqualTo(expectedFee));

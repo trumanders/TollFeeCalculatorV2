@@ -3,12 +3,12 @@ namespace TollFeeCalculatorV2;
 
 public class FeeCalculator : IFeeCalculator
 {
-	TollRateProvider _tollRateProvider;
+	ITollRateProvider _tollRateProvider;
 
 	const int MAX_FEE = 60;
 	static readonly TimeSpan _singleChargeInterval = TimeSpan.FromHours(1);
 
-	public FeeCalculator(TollRateProvider tollRateProvider)
+	public FeeCalculator(ITollRateProvider tollRateProvider)
 	{
 		try
 		{
