@@ -126,7 +126,7 @@ public class FeeCalculatorTests
 	[Test, TestCaseSource(nameof(TollPassageTestCases))]
 	public void GetTotalFeeForPassages_ReturnsCorrectTotalFee(List<TollPassage> tollPassages, int expectedFee)
 	{
-		var tollRateProvider = A.Fake<ITollRateProvider>();
+		var tollRateProvider = A.Fake<TollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
 		var actualFee = sut.GetTotalFeeForPassages(tollPassages);
 
@@ -151,7 +151,7 @@ public class FeeCalculatorTests
 	[TestCase("2024-12-26T08:15:07", 0)]
 	public void GetFeeByDate_ReturnsZeroFeeForHolidays(DateTime dateTime, int expectedFee)
 	{
-		var tollRateProvider = A.Fake<ITollRateProvider>();
+		var tollRateProvider = A.Fake<TollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
 		var actualFee = sut.GetFeeByDate(dateTime);
 		Assert.That(actualFee, Is.EqualTo(expectedFee));
@@ -179,7 +179,7 @@ public class FeeCalculatorTests
 	[TestCase("2024-05-10T16:59:59", 22)]
 	public void GetFeeByDate_ReturnsCorrectFeeAtRateChangeTimes(DateTime dateTime, int expectedFee)
 	{
-		var tollRateProvider = A.Fake<ITollRateProvider>();
+		var tollRateProvider = A.Fake<TollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
 		var actualFee = sut.GetFeeByDate(dateTime);
 		Assert.That(actualFee, Is.EqualTo(expectedFee));
