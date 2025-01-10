@@ -50,6 +50,4 @@ public class VehicleDataOutput : IVehicleDataOutput
 	{
 		Console.WriteLine(Separator);
 	}
-
-
 }

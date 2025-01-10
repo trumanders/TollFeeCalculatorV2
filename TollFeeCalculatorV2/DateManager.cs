@@ -17,7 +17,6 @@ public class DateManager : IDateManager
 			throw new Exception("This program is designed to work with year 2024 only");
 		}
 
-
 		return GenerateRandomDates();
 	}
 

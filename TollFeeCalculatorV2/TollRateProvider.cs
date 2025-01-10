@@ -34,11 +34,6 @@ public class TollRateProvider : ITollRateProvider
 			return 0;
 	}
 
-	/// <summary>
-	/// Checks whether a given DateTime is a toll free date.
-	/// </summary>
-	/// <param name="date">The DateTime to check.</param>
-	/// <returns>True if the parameter date is a toll free date. Otherwise false.</returns>
 	private bool IsTollFreeDate(DateTime date)
 	{
 		// All saturdays and sundays, and july are toll-free
