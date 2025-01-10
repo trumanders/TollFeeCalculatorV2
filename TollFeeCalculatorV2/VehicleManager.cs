@@ -52,7 +52,7 @@ namespace TollFeeCalculatorV2
 				}
 
 				if (!IsTollFreeTypes(vehicle.Types))
-					_feeCalculator.SetFeeDue(vehicle.TollPassages);
+					_feeCalculator.CalculateFeeDue(vehicle.TollPassages);
 			}
 		}
 

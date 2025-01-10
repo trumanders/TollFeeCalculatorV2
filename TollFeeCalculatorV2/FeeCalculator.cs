@@ -24,32 +24,32 @@ public class FeeCalculator : IFeeCalculator
 		}
 	}
 
-	public void SetFeeDue(List<TollPassage> tollPassages)
+	public void CalculateFeeDue(List<TollPassage> tollPassages)
 	{
 		if (tollPassages == null || tollPassages.Count == 0)
 			return;
 
-		var firstFeeIndex = tollPassages.FindIndex(passage => passage.Fee > 0) < 0
-			? 0 : tollPassages.FindIndex(passage => passage.Fee > 0);
+		var firstFeePassage = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
+			?? tollPassages.First();
 
-		var intervalStart = tollPassages[firstFeeIndex].PassageTime;
-		var highestFeeInIntervalIndex = firstFeeIndex;
+		var intervalStart = firstFeePassage.PassageTime;
+		var highestFeePassageInInterval = firstFeePassage;
 
-		foreach (var (tollPassage, i) in tollPassages.Select((value, index) => (value, index)))
+		foreach (var tollPassage in tollPassages)
 		{
 			if (IsPassageWithinInterval(intervalStart, tollPassage.PassageTime, _singleChargeInterval))
 			{
-				highestFeeInIntervalIndex = tollPassage.Fee > tollPassages[highestFeeInIntervalIndex].Fee
-					? i : highestFeeInIntervalIndex;
+				highestFeePassageInInterval = tollPassage.Fee > highestFeePassageInInterval.Fee
+					? tollPassage : highestFeePassageInInterval;
 			}
 			else
 			{
-				tollPassages[highestFeeInIntervalIndex].IsFeeToPay = tollPassages[highestFeeInIntervalIndex].Fee > 0;
-				highestFeeInIntervalIndex = i;
+				highestFeePassageInInterval.IsFeeToPay = highestFeePassageInInterval.Fee > 0;
+				highestFeePassageInInterval = tollPassage;
 				intervalStart = tollPassage.PassageTime;
 			}
 		}
-		tollPassages[highestFeeInIntervalIndex].IsFeeToPay = tollPassages[highestFeeInIntervalIndex].Fee > 0;
+		highestFeePassageInInterval.IsFeeToPay = highestFeePassageInInterval.Fee > 0;
 	}
 
 	public int GetFeeByDate(DateTime date)

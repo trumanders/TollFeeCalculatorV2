@@ -8,7 +8,7 @@ namespace TollFeeCalculatorV2.Tests;
 public class FeeCalculatorTests
 {
 	[Test]
-	public void SetFeeDue_SetsCorrectFeeDues()
+	public void CalculateFeeDue_SetsCorrectFeeDues()
 	{
 		var tollPassagesMixed = new List<TollPassage>
 		{
@@ -36,7 +36,7 @@ public class FeeCalculatorTests
 
 		var tollRateProvider = A.Fake<ITollRateProvider>();
 		var sut = new FeeCalculator(tollRateProvider);
-		sut.SetFeeDue(tollPassagesMixed);
+		sut.CalculateFeeDue(tollPassagesMixed);
 
 		Assert.That(tollPassagesMixed.Zip(expectedFeeDueMixed, (tollPassage, expected) => tollPassage.IsFeeToPay == expected), Is.All.True);
 	}
