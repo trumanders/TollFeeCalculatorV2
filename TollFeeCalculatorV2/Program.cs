@@ -47,19 +47,12 @@ public class Program
 			.AddSingleton<IDateManager, DateManager>()
 			.AddSingleton<ITollRateProvider, TollRateProvider>()
 			.AddSingleton<IFeeCalculator, FeeCalculator>(provider => new FeeCalculator(provider.GetRequiredService<ITollRateProvider>()))
-			.AddSingleton<IVehicleManager, VehicleManager>(provider =>
-			{
-				var tollRateProvider = provider.GetRequiredService<ITollRateProvider>();
-				var feeCalculator = provider.GetRequiredService<IFeeCalculator>();
-				var dateManager = provider.GetRequiredService<IDateManager>();
-				var vehicleDataOutput = provider.GetRequiredService<IVehicleDataOutput>();
-				return new VehicleManager(
-					_vehicles,
-					provider.GetRequiredService<IFeeCalculator>(),
-					provider.GetRequiredService<IDateManager>(),
-					provider.GetRequiredService<IVehicleDataOutput>()
-					);
-			});
+			.AddSingleton<IVehicleManager, VehicleManager>(provider => new VehicleManager(
+				_vehicles,
+				provider.GetRequiredService<IFeeCalculator>(),
+				provider.GetRequiredService<IDateManager>(),
+				provider.GetRequiredService<IVehicleDataOutput>())
+			);
 		});
 	}
 
