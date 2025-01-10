@@ -26,8 +26,12 @@ public class FeeCalculator : IFeeCalculator
 
 	public void CalculateFeeDue(List<TollPassage> tollPassages)
 	{
-		if (tollPassages == null || tollPassages.Count == 0)
-			return;
+		if (tollPassages == null)
+			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
+
+		if (tollPassages.Count == 0)
+			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
+
 
 		var firstFeePassage = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
 			?? tollPassages.First();
