@@ -8,13 +8,6 @@ public class DateManager : IDateManager
 	TimeSpan _timeSpan;
 	int _passageCount;
 
-	/// <summary>
-	/// Generate a list of random DateTime based on the provided TimeSpan and passageCount within the year 2024.
-	/// </summary>
-	/// <param name="passageCount">The number of passages to generate dates for</param>
-	/// <param name="timeSpan">The time span within which the dates should be randomized.</param>
-	/// <returns></returns>
-	/// <exception cref="Exception"></exception>
 	public List<DateTime> GetRandomDates(int passageCount, TimeSpan timeSpan)
 	{
 		_timeSpan = timeSpan;

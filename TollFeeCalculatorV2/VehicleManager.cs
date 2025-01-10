@@ -28,9 +28,6 @@ namespace TollFeeCalculatorV2
 			
 		}
 
-		/// <summary>
-		/// Display all toll fees and total fee for all vehicles
-		/// </summary>
 		public void DisplayTollFeesForAllVehicles()
 		{
 			foreach (var vehicle in _vehicles)
@@ -39,11 +36,6 @@ namespace TollFeeCalculatorV2
 			}
 		}
 
-		/// <summary>
-		/// Generate new toll passages with fees for all vehicles
-		/// </summary>
-		/// <param name="numberOfPassages">The number of toll passages to add to each vehicle.</param>
-		/// <param name="timeSpan">The time span within which the toll passages should be generated.</param>
 		public void GenerateNewTollPassagesForAllVehicles(int numberOfPassages, TimeSpan timeSpan)
 		{
 			if (timeSpan <= TimeSpan.Zero || numberOfPassages < 1)
@@ -64,11 +56,6 @@ namespace TollFeeCalculatorV2
 			}
 		}
 
-		/// <summary>
-		/// Check if any of the types is toll free
-		/// </summary>
-		/// <param name="types">The vehicle types to c</param>
-		/// <returns>True if types contains a toll free type.</returns>
 		public bool IsTollFreeTypes(VehicleTypes types)
 		{
 			foreach (var tollFreeType in VehicleTypesManager.GetTollFreeVehicleTypes())

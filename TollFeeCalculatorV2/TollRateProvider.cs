@@ -8,12 +8,6 @@ public class TollRateProvider : ITollRateProvider
 	private const int FEE_MEDIUM = 16;
 	private const int FEE_HIGH = 22;
 
-	/// <summary>
-	/// Get the toll rate for a given DateTime based on specific intervals and
-	/// whether the date is a toll free date or not.
-	/// </summary>
-	/// <param name="dateTime">The date to get the toll rate for.</param>
-	/// <returns>The fee associated with the given DateTime.</returns>
 	public int GetTollRate(DateTime dateTime)
 	{
 		if (IsTollFreeDate(dateTime))

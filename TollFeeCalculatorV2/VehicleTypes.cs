@@ -1,8 +1,5 @@
 ﻿namespace TollFeeCalculatorV2;
 
-/// <summary>
-/// List of vehicle types
-/// </summary>
 public enum VehicleTypes
 {
 	Motorbike = 1,
