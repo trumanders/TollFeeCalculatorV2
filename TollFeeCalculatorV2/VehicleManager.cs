@@ -58,13 +58,8 @@ namespace TollFeeCalculatorV2
 
 		public bool IsTollFreeTypes(VehicleTypes types)
 		{
-			foreach (var tollFreeType in VehicleTypesManager.GetTollFreeVehicleTypes())
-			{
-				if ((types & tollFreeType) != 0)
-					return true;
-			}
-
-			return false;
+			return VehicleTypesManager.GetTollFreeVehicleTypes()
+				.Any(tollFreeType => types.HasFlag(tollFreeType));
 		}
 	}
 }
