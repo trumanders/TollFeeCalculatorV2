@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2;
 
@@ -10,6 +11,7 @@ public class Program
 
 	static int passageCount = 50;
 	static TimeSpan timeSpan = new TimeSpan(5, 0, 0, 0);
+	static Config config;
 
 	public Program(IVehicleManager vehicleManager)
 	{
@@ -18,6 +20,9 @@ public class Program
 
 	static void Main(string[] args)
 	{
+		string jsonString = File.ReadAllText("D:\\Anders\\OneDrive\\Söka jobb\\0-tidigare\\X - Norion Bank\\TollFeeCalculatorV2\\TollFeeCalculatorV2\\appsettings.json");
+		config = JsonConvert.DeserializeObject<Config>(jsonString);
+
 		InitializeVehicles();
 		var host = CreateHostBuilder(args).Build();
 
@@ -45,7 +50,7 @@ public class Program
 			services
 			.AddSingleton<IVehicleDataOutput, VehicleDataOutput>()
 			.AddSingleton<IDateManager, DateManager>()
-			.AddSingleton<ITollRateProvider, TollRateProvider>()
+			.AddSingleton<ITollRateProvider, TollRateProvider>(provider => new TollRateProvider(config))
 			.AddSingleton<IFeeCalculator, FeeCalculator>(provider => new FeeCalculator(provider.GetRequiredService<ITollRateProvider>()))
 			.AddSingleton<IVehicleManager, VehicleManager>(provider => new VehicleManager(
 				_vehicles,

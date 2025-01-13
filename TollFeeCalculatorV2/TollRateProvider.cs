@@ -4,58 +4,43 @@ namespace TollFeeCalculatorV2;
 
 public class TollRateProvider : ITollRateProvider
 {
-	private const int FEE_LOW = 9;
-	private const int FEE_MEDIUM = 16;
-	private const int FEE_HIGH = 22;
+	private Config _config;
+
+	public TollRateProvider(Config config)
+	{
+		_config = config;
+	}
 
 	public int GetTollRate(DateTime dateTime)
 	{
 		if (IsTollFreeDate(dateTime))
 			return 0;
 
-		TimeSpan time = dateTime.TimeOfDay;
+		TimeSpan time = dateTime.TimeOfDay;	
 
-		if ((time >= new TimeSpan(6, 0, 0) && time < new TimeSpan(6, 30, 0)) ||
-			(time >= new TimeSpan(8, 30, 0) && time < new TimeSpan(15, 0, 0)) ||
-			(time >= new TimeSpan(18, 0, 0) && time < new TimeSpan(18, 30, 0)))
-			return FEE_LOW;
+		foreach (var tollFee in _config.TollFees)
+		{
+			foreach (var interval in tollFee.TimeIntervals)
+			{
+				if (time >= interval.Start && time < interval.End)
+				{
+					return tollFee.Fee;
+				}
+			}
+		}
 
-		else if ((time >= new TimeSpan(6, 30, 0) && time < new TimeSpan(7, 0, 0)) ||
-				 (time >= new TimeSpan(8, 0, 0) && time < new TimeSpan(8, 30, 0)) ||
-				 (time >= new TimeSpan(15, 0, 0) && time < new TimeSpan(15, 30, 0)) ||
-				 (time >= new TimeSpan(17, 0, 0) && time < new TimeSpan(18, 0, 0)))
-			return FEE_MEDIUM;
-
-		else if ((time >= new TimeSpan(7, 0, 0) && time < new TimeSpan(8, 0, 0)) ||
-				 (time >= new TimeSpan(15, 30, 0) && time < new TimeSpan(17, 0, 0)))
-			return FEE_HIGH;
-
-		else
-			return 0;
+		return _config.DefaultFee;
 	}
 
 	private bool IsTollFreeDate(DateTime date)
 	{
+		if (date.Year != 2024)
+			throw new NotImplementedException();
+
 		// All saturdays and sundays, and july are toll-free
-		if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday || date.Month == 7)
+		if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday || _config.TollFreeMonths.Contains(date.Month))
 			return true;
 
-		DateTime[] holidaysOnWeekdays = new DateTime[]
-		{
-		new DateTime(2024, 1, 1),
-		new DateTime(2024, 1, 6),
-		new DateTime(2024, 3, 29),
-		new DateTime(2024, 4, 1),
-		new DateTime(2024, 5, 1),
-		new DateTime(2024, 5, 9),
-		new DateTime(2024, 6, 6),
-		new DateTime(2024, 6, 22),
-		new DateTime(2024, 11, 2),
-		new DateTime(2024, 12, 25),
-		new DateTime(2024, 12, 26),
-		};
-
-		return date.Year == 2024 && (holidaysOnWeekdays.Contains(date.Date) || holidaysOnWeekdays.Contains(date.Date.AddDays(1)));
+		return _config.Holidays.Contains(date.Date) || _config.Holidays.Contains(date.Date.AddDays(1));
 	}
 }
-

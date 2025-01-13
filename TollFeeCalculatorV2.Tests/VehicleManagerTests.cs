@@ -23,14 +23,17 @@ namespace TollFeeCalculatorV2.Tests
 		[TestCase(VehicleTypes.Caravan | VehicleTypes.Military, true)]
 		public void IsTollFreeVehicle_ReturnsCorrectBool(VehicleTypes types, bool expectedResult)
 		{
+			// Arrange
 			var vehicles = A.Fake<List<IVehicle>>();
 			var feeCalc = A.Fake<FeeCalculator>();
 			var dateMan = A.Fake<DateManager>();
 			var vehicleDataOutput = A.Fake<VehicleDataOutput>();
-
 			var sut = new VehicleManager(vehicles, feeCalc, dateMan, vehicleDataOutput);
+
+			// Act
 			var actualResult = sut.IsTollFreeTypes(types);
 
+			// Assert
 			Assert.That(actualResult, Is.EqualTo(expectedResult));
 		}
 	}
