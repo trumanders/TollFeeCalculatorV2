@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TollFeeCalculatorV2;
 using TollFeeCalculatorV2.Interfaces;
 
 namespace TollFeeCalculatorV2.Tests;
@@ -16,9 +17,7 @@ public class TollRateProviderTests
 	[SetUp]
 	public void Setup()
 	{
-		_sut = new TollRateProvider(
-			JsonConvert.DeserializeObject<Config>(
-				File.ReadAllText("D:\\Anders\\OneDrive\\Söka jobb\\0-tidigare\\X - Norion Bank\\TollFeeCalculatorV2\\TollFeeCalculatorV2\\appsettings.json")));
+		_sut = new TollRateProvider(ReadAndParseConfigJSON.GetConfig());
 	}
 
 	[TestCase("2024-01-01T14:34:56", 0)]

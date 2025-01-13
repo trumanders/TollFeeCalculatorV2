@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using System.Reflection;
 using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2;
 
@@ -20,8 +21,7 @@ public class Program
 
 	static void Main(string[] args)
 	{
-		string jsonString = File.ReadAllText("D:\\Anders\\OneDrive\\Söka jobb\\0-tidigare\\X - Norion Bank\\TollFeeCalculatorV2\\TollFeeCalculatorV2\\appsettings.json");
-		config = JsonConvert.DeserializeObject<Config>(jsonString);
+		config = ReadAndParseConfigJSON.GetConfig();
 
 		InitializeVehicles();
 		var host = CreateHostBuilder(args).Build();
