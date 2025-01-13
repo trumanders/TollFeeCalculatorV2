@@ -3,12 +3,12 @@ namespace TollFeeCalculatorV2
 {
 	public class VehicleManager : IVehicleManager
 	{
-		private readonly List<IVehicle> _vehicles;
+		private readonly List<Vehicle> _vehicles;
 		private readonly IFeeCalculator _feeCalculator;
 		private readonly IDateManager _dateManager;
 		private readonly IVehicleDataOutput _vehicleDataOutput;
 
-		public VehicleManager(List<IVehicle> vehicles, IFeeCalculator feeCalculator, IDateManager dateManager, IVehicleDataOutput vehicleDataOutput)
+		public VehicleManager(List<Vehicle> vehicles, IFeeCalculator feeCalculator, IDateManager dateManager, IVehicleDataOutput vehicleDataOutput)
 		{
 			try
 			{

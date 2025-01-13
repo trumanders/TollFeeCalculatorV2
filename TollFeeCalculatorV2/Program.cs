@@ -7,7 +7,7 @@ namespace TollFeeCalculatorV2;
 public class Program
 {
 	private readonly IVehicleManager _vehicleManager;
-	private static List<IVehicle> _vehicles = new List<IVehicle>();
+	private static List<Vehicle> _vehicles = new List<Vehicle>();
 
 	static int passageCount = 50;
 	static TimeSpan timeSpan = new TimeSpan(5, 0, 0, 0);
@@ -74,7 +74,7 @@ public class Program
 
 	private static void InitializeVehicles()
 	{
-		_vehicles = new List<IVehicle>()
+		_vehicles = new List<Vehicle>()
 		{
 			new Vehicle("Volvo 245", VehicleTypes.Car),
 			new Vehicle("Truck", VehicleTypes.Military)

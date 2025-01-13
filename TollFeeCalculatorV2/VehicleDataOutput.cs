@@ -8,7 +8,7 @@ public class VehicleDataOutput : IVehicleDataOutput
 	private const string TotalFeeHeader = "TOTAL FEE";
 	private const string Separator = "=======================================";
 
-	public void DisplayTollFees(IVehicle vehicle, int totalFee)
+	public void DisplayTollFees(Vehicle vehicle, int totalFee)
 	{
 		WriteVehicleHeader(vehicle);
 		WritePassageTimes(vehicle);
@@ -16,7 +16,7 @@ public class VehicleDataOutput : IVehicleDataOutput
 		WriteSeparator();
 	}
 
-	public string GetVehicleTypes(IVehicle vehicle)
+	public string GetVehicleTypes(Vehicle vehicle)
 	{
 		return string.Join(", ",
 			Enum.GetValues(typeof(VehicleTypes))
@@ -26,12 +26,12 @@ public class VehicleDataOutput : IVehicleDataOutput
 		);
 	}
 
-	private void WriteVehicleHeader(IVehicle vehicle)
+	private void WriteVehicleHeader(Vehicle vehicle)
 	{
 		Console.WriteLine($"\n{vehicle.Name} ({GetVehicleTypes(vehicle)})");
 	}
 
-	private void WritePassageTimes(IVehicle vehicle)
+	private void WritePassageTimes(Vehicle vehicle)
 	{
 		Console.WriteLine($"{PassageTimeHeader,-23}{FeeHeader,-5}{PayHeader,5}");
 

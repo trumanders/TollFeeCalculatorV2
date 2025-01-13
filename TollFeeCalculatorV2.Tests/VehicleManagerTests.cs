@@ -24,7 +24,7 @@ namespace TollFeeCalculatorV2.Tests
 		public void IsTollFreeVehicle_ReturnsCorrectBool(VehicleTypes types, bool expectedResult)
 		{
 			// Arrange
-			var vehicles = A.Fake<List<IVehicle>>();
+			var vehicles = A.Fake<List<Vehicle>>();
 			var feeCalc = A.Fake<FeeCalculator>();
 			var dateMan = A.Fake<DateManager>();
 			var vehicleDataOutput = A.Fake<VehicleDataOutput>();
