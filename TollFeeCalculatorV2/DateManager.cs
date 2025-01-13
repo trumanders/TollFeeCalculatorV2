@@ -12,10 +12,6 @@ public class DateManager : IDateManager
 	{
 		_timeSpan = timeSpan;
 		_passageCount = passageCount;
-		if (timeSpan > _yearTimeSpan)
-		{
-			throw new Exception("This program is designed to work with year 2024 only");
-		}
 
 		return GenerateRandomDates();
 	}

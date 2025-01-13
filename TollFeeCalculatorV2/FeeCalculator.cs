@@ -10,18 +10,7 @@ public class FeeCalculator : IFeeCalculator
 
 	public FeeCalculator(ITollRateProvider tollRateProvider)
 	{
-		try
-		{
-			_tollRateProvider = tollRateProvider ?? throw new ArgumentNullException(nameof(tollRateProvider));
-		}
-		catch (ArgumentNullException ex)
-		{
-			throw new Exception("Invalid input parameter.", ex);
-		}
-		catch (Exception ex)
-		{
-			throw new Exception("Error initializing TollRateProvider", ex);
-		}
+		_tollRateProvider = tollRateProvider ?? throw new ArgumentNullException(nameof(tollRateProvider));
 	}
 
 	public void CalculateFeeDue(List<TollPassage> tollPassages)
@@ -30,8 +19,7 @@ public class FeeCalculator : IFeeCalculator
 			throw new ArgumentNullException(nameof(tollPassages), "Toll passages list cannot be null.");
 
 		if (tollPassages.Count == 0)
-			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages));
-
+			throw new ArgumentException("Toll passages list cannot be empty.", nameof(tollPassages)); 
 
 		var firstFeePassage = tollPassages.FirstOrDefault(passage => passage.Fee > 0)
 			?? tollPassages.First();

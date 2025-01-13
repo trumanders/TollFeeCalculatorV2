@@ -10,22 +10,10 @@ namespace TollFeeCalculatorV2
 
 		public VehicleManager(List<Vehicle> vehicles, IFeeCalculator feeCalculator, IDateManager dateManager, IVehicleDataOutput vehicleDataOutput)
 		{
-			try
-			{
-				_vehicles = vehicles ?? throw new ArgumentNullException(nameof(vehicles));
-				_feeCalculator = feeCalculator ?? throw new ArgumentNullException(nameof(feeCalculator));
-				_dateManager = dateManager ?? throw new ArgumentNullException(nameof(dateManager));
-				_vehicleDataOutput = vehicleDataOutput ?? throw new ArgumentNullException(nameof(vehicleDataOutput));
-			}
-			catch (ArgumentNullException ex)
-			{
-				throw new Exception("Invalid input parameter.", ex);
-			}
-			catch (Exception ex)
-			{
-				throw new Exception("Error initializing VehicleManager", ex);
-			}
-			
+			_vehicles = vehicles ?? throw new ArgumentNullException(nameof(vehicles));
+			_feeCalculator = feeCalculator ?? throw new ArgumentNullException(nameof(feeCalculator));
+			_dateManager = dateManager ?? throw new ArgumentNullException(nameof(dateManager));
+			_vehicleDataOutput = vehicleDataOutput ?? throw new ArgumentNullException(nameof(vehicleDataOutput));
 		}
 
 		public void DisplayTollFeesForAllVehicles()
