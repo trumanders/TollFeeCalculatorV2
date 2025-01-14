@@ -1,5 +1,4 @@
 ﻿namespace TollFeeCalculatorV2;
-
 public class TollPassage
 {
 	public DateTime PassageTime { get; private set; }

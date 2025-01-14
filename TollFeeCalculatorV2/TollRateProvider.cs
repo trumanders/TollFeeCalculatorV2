@@ -1,5 +1,4 @@
 ﻿using TollFeeCalculatorV2.Interfaces;
-
 namespace TollFeeCalculatorV2;
 
 public class TollRateProvider : ITollRateProvider

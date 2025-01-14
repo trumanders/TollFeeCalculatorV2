@@ -1,5 +1,4 @@
 ﻿namespace TollFeeCalculatorV2;
-
 public class VehicleTypesManager
 {
 	public static List<VehicleTypes> GetTollFreeVehicleTypes()

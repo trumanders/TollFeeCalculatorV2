@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using System.Reflection;
 using TollFeeCalculatorV2.Interfaces;
 namespace TollFeeCalculatorV2;
 
@@ -10,7 +8,7 @@ public class Program
 	private readonly IVehicleManager _vehicleManager;
 	private static List<Vehicle> _vehicles = new List<Vehicle>();
 
-	static int passageCount = 50;
+	static int passageCount = 10;
 	static TimeSpan timeSpan = new TimeSpan(5, 0, 0, 0);
 	static Config config;
 
@@ -63,15 +61,9 @@ public class Program
 
 	private void Run()
 	{
-		GenerateTollPassagesAndDisplayFees();
-	}
-
-	private void GenerateTollPassagesAndDisplayFees()
-	{
 		_vehicleManager.GenerateNewTollPassagesForAllVehicles(passageCount, timeSpan);
 		_vehicleManager.DisplayTollFeesForAllVehicles();
 	}
-
 	private static void InitializeVehicles()
 	{
 		_vehicles = new List<Vehicle>()

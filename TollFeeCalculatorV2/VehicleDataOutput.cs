@@ -43,6 +43,7 @@ public class VehicleDataOutput : IVehicleDataOutput
 
 	private void WriteTotalFee(int totalFee)
 	{
+		 
 		Console.WriteLine($"{TotalFeeHeader}{totalFee, 17}");
 	}
 
